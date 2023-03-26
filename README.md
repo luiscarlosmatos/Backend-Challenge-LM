@@ -32,3 +32,5 @@ or by single click on:
 * ###### run.bat (windows)
 * ###### run.sh (linux)
 
+On start up, some data will be populated on the database using flyway migration tool.
+
