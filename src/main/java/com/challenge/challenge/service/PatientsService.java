@@ -1,7 +1,7 @@
 package com.challenge.challenge.service;
 
 import com.challenge.challenge.dao.ConsultsRepository;
-import com.challenge.challenge.dao.PatientRepository;
+import com.challenge.challenge.dao.PagingPatientRepository;
 import com.challenge.challenge.dto.*;
 import com.challenge.challenge.entity.Patient;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class PatientsService {
 
     @Autowired
-    private PatientRepository patientRepository;
+    private PagingPatientRepository pagingPatientRepository;
 
     @Autowired
     private ConsultsRepository consultsRepository;
@@ -37,7 +37,7 @@ public class PatientsService {
         // decrementing the page number to have a more natural user feeling, starting in 1 instead of 0
         Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
 
-        Page<Patient> patients = patientRepository.findAll(pageable);
+        Page<Patient> patients = pagingPatientRepository.findAll(pageable);
 
         // get content for page object
         List<Patient> listOfPatients = patients.getContent();
@@ -58,7 +58,7 @@ public class PatientsService {
 
     public PatientsConsultsAndSymptomsDTO getPatientConsultsAndSymptoms(String patientName) {
 
-        Patient patient = patientRepository.findByName(patientName)
+        Patient patient = pagingPatientRepository.findByName(patientName)
                 .orElseThrow(() -> new EntityNotFoundException("Patinent with Name=" + patientName + " does not exists"));
 
         PatientsConsultsAndSymptomsDTO patientsConsultsAndSymptomsDTO = new PatientsConsultsAndSymptomsDTO();
@@ -86,7 +86,7 @@ public class PatientsService {
     }
 
     public List<SpecialityWithMaxPatientsDTO> findSpecialityWithMaxPatients(int minCount) {
-        return patientRepository.findSpecialityWithMaxPatients(minCount);
+        return pagingPatientRepository.findSpecialityWithMaxPatients(minCount);
     }
 
 }

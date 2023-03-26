@@ -3,25 +3,18 @@ package com.challenge.challenge.service;
 import com.challenge.challenge.dao.ConsultsRepository;
 import com.challenge.challenge.dao.DoctorRepository;
 import com.challenge.challenge.dao.PathologyRepository;
-import com.challenge.challenge.dao.PatientRepository;
-import com.challenge.challenge.dto.ConsultCreationDTO;
+import com.challenge.challenge.dao.PagingPatientRepository;
 import com.challenge.challenge.entity.Consult;
 import com.challenge.challenge.entity.Pathology;
 import com.challenge.challenge.entity.Patient;
 import com.challenge.challenge.entity.Symptom;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.webjars.NotFoundException;
 
-import javax.management.BadAttributeValueExpException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +27,7 @@ public class ConsultsService {
     private final ConsultsRepository consultsRepository;
 
     @Autowired
-    private final PatientRepository patientRepository;
+    private final PagingPatientRepository pagingPatientRepository;
 
     @Autowired
     private final DoctorRepository doctorRepository;
@@ -61,7 +54,7 @@ public class ConsultsService {
         log.info("Getting patient with name:"+consult.getPatient().getName());
 
         consultToSave.setPatient(
-                patientRepository.findByName(consult.getPatient().getName())
+                pagingPatientRepository.findByName(consult.getPatient().getName())
                         .orElseGet(() -> {
                             log.info(" patient with name:"+consult.getPatient().getName()+" does not exists! creating one..");
                             return new Patient(
