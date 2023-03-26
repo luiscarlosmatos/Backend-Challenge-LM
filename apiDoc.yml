@@ -1,0 +1,261 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080/challenge
+    description: Generated server url
+paths:
+  /api/consults:
+    post:
+      tags:
+        - Consult REST endpoint
+      summary: POST Consult
+      description: Creates a consult
+      operationId: createConsult
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Consult'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Consult'
+  /api/specialities/maxPatients:
+    get:
+      tags:
+        - Specialities REST endpoint
+      summary: GET Specialities
+      description: Lists specialities that a minimum number os patients had used
+      operationId: findSpecialityWithMaxPatients
+      parameters:
+        - name: minPatients
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 2
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpecialityWithMaxPatientsDTO'
+  /api/patients:
+    get:
+      tags:
+        - Patient REST endpoint
+      summary: GET Patients
+      description: List patients in a paginated manner
+      operationId: getPatients
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+        - name: sortBy
+          in: query
+          required: false
+          schema:
+            type: string
+            default: id
+        - name: sortDir
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ASC
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PatientPageDTO'
+  /api/patients/{patientName}/ConsultsAndSymptoms:
+    get:
+      tags:
+        - Patient REST endpoint
+      summary: GET Patient consults
+      description: Gets consults and symptoms from a patient
+      operationId: getPatientConsultsAndSymptoms
+      parameters:
+        - name: patientName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientsConsultsAndSymptomsDTO'
+  /api/consults/{consultId}:
+    get:
+      tags:
+        - Consult REST endpoint
+      summary: GET Consult
+      description: Gets a consult by it's ID
+      operationId: getConsultById
+      parameters:
+        - name: consultId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consult'
+components:
+  schemas:
+    Consult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        doctor:
+          $ref: '#/components/schemas/Doctor'
+        patient:
+          $ref: '#/components/schemas/Patient'
+        speciality:
+          type: string
+          enum:
+            - DERMATOLOGY
+            - OPHTHALMOLOGY
+            - RADIOLOGY
+            - FAMILY_MEDICINE
+            - PEDIATRICS
+        pathology:
+          $ref: '#/components/schemas/Pathology'
+    Doctor:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Pathology:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        pathologyName:
+          type: string
+        pathologySymptoms:
+          type: array
+          items:
+            $ref: '#/components/schemas/Symptom'
+    Patient:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        age:
+          type: integer
+          format: int32
+    Symptom:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        symptomDescription:
+          type: string
+    SpecialityWithMaxPatientsDTO:
+      type: object
+      properties:
+        numberOfPatients:
+          type: integer
+          format: int32
+        specialityName:
+          type: string
+    PatientDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+          format: int32
+    PatientPageDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientDTO'
+        pageNo:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        last:
+          type: boolean
+    ConsultDTO:
+      type: object
+      properties:
+        consultId:
+          type: integer
+          format: int64
+        doctor:
+          type: string
+        speciality:
+          type: string
+    PatientsConsultsAndSymptomsDTO:
+      type: object
+      properties:
+        consults:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsultDTO'
+        symptoms:
+          type: array
+          items:
+            $ref: '#/components/schemas/SymptomDTO'
+    SymptomDTO:
+      type: object
+      properties:
+        symptomId:
+          type: integer
+          format: int64
+        description:
+          type: string
