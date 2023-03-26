@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "pathologies")
@@ -28,4 +27,30 @@ public class Pathology {
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<Symptom> pathologySymptoms;
 
+    // Getters and Setters
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPathologyName() {
+        return pathologyName;
+    }
+
+    public void setPathologyName(String pathologyName) {
+        this.pathologyName = pathologyName;
+    }
+
+    public List<Symptom> getPathologySymptoms() {
+        return pathologySymptoms;
+    }
+
+    public void setPathologySymptoms(List<Symptom> pathologySymptoms) {
+        this.pathologySymptoms = pathologySymptoms;
+    }
 }

@@ -27,6 +27,4 @@ public interface PatientRepository extends PagingAndSortingRepository<Patient, L
                     "having count(*) > 2")
     List<SpecialityWithMaxPatientsDTO> findSpecialityWithMaxPatients();
 
-    List<Patient> findAllByNameOrAge(Integer age, String name, Pageable pageable);
-
 }
