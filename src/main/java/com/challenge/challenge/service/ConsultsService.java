@@ -9,14 +9,17 @@ import com.challenge.challenge.entity.Consult;
 import com.challenge.challenge.entity.Pathology;
 import com.challenge.challenge.entity.Patient;
 import com.challenge.challenge.entity.Symptom;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.webjars.NotFoundException;
 
+import javax.management.BadAttributeValueExpException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,11 +50,11 @@ public class ConsultsService {
     public Consult getConsultById(Long id) {
 
         return consultsRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Consult with ID="+id+" not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Consult with ID="+id+" not found"));
 
     }
 
-    public Consult createConsult(Consult consult) {
+    public Consult createConsult(Consult consult)  {
 
         Consult consultToSave = new Consult();
 
@@ -64,13 +67,9 @@ public class ConsultsService {
                         ))
         );
 
-
-//        Doctor doctor = doctorRepository.findByName(consult.getDoctorName()).orElseThrow(() -> {
-//            //TODO ERROR;
-//            //return ResponseEntity.badRequest().body("Doctor with");
-//        });
-
-        consultToSave.setDoctor(doctorRepository.findByName(consult.getDoctor().getName()).get());
+        consultToSave.setDoctor(doctorRepository.findByName(consult.getDoctor().getName())
+                .orElseThrow(() -> new IllegalArgumentException("Doctor with name:"+consult.getDoctor().getName()+" does not exists!"))
+        );
         consultToSave.setSpeciality(consult.getSpeciality());
 
         consultToSave.setPathology(

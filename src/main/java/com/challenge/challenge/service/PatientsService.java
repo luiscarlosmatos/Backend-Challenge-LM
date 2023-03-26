@@ -4,6 +4,7 @@ import com.challenge.challenge.dao.ConsultsRepository;
 import com.challenge.challenge.dao.PatientRepository;
 import com.challenge.challenge.dto.*;
 import com.challenge.challenge.entity.Patient;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -56,7 +57,7 @@ public class PatientsService {
     public PatientsConsultsAndSymptomsDTO getPatientConsultsAndSymptoms(String patientName) {
 
         Patient patient = patientRepository.findByName(patientName)
-                .orElseThrow(() -> new NotFoundException("Patinent with Name=" + patientName + " does not exists"));
+                .orElseThrow(() -> new EntityNotFoundException("Patinent with Name=" + patientName + " does not exists"));
 
         PatientsConsultsAndSymptomsDTO patientsConsultsAndSymptomsDTO = new PatientsConsultsAndSymptomsDTO();
 
