@@ -3,6 +3,8 @@ package com.challenge.challenge.controller;
 
 import com.challenge.challenge.dto.SpecialityWithMaxPatientsDTO;
 import com.challenge.challenge.service.PatientsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/specialities")
 @AllArgsConstructor
 @Log
+@Tag(name = "Specialities REST endpoint")
 public class SpecialitiesController {
 
     @Autowired
@@ -30,6 +33,10 @@ public class SpecialitiesController {
      * @return a list os items, each one containing the speciality name and the number of patients tha had used it
      */
     @GetMapping(value = "/maxPatients", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            summary = "GET Specialities",
+            description = "Lists specialities that a minimum number os patients had used"
+    )
     public ResponseEntity<List<SpecialityWithMaxPatientsDTO>> findSpecialityWithMaxPatients(
             @RequestParam(value = "minPatients", defaultValue = "2", required = true) int minPatients
     ) {

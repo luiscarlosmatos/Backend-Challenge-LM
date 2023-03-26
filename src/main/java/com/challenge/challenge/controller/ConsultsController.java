@@ -3,6 +3,8 @@ package com.challenge.challenge.controller;
 
 import com.challenge.challenge.entity.Consult;
 import com.challenge.challenge.service.ConsultsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
@@ -19,6 +21,7 @@ import java.net.URI;
 @AllArgsConstructor
 @NoArgsConstructor
 @Log
+@Tag(name = "Consult REST endpoint")
 public class ConsultsController {
 
     @Autowired
@@ -29,8 +32,12 @@ public class ConsultsController {
      * @param id refers to the consultId
      * @return ResponseEntity with http status OK if the consults exists or http NOT_FOUND when doesn´t exist
      */
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Consult> getConsultById(@PathVariable("id") Long id) {
+    @GetMapping(value = "/{consultId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            summary = "GET Consult",
+            description = "Gets a consult by it's ID"
+    )
+    public ResponseEntity<Consult> getConsultById(@PathVariable("consultId") Long id) {
 
         log.info("Getting Consult with ID:"+id);
 
@@ -46,6 +53,10 @@ public class ConsultsController {
      * @return ResponseEntity with http status CREATED if the operation is successful
      */
     @PostMapping
+    @Operation(
+            summary = "POST Consult",
+            description = "Creates a consult"
+    )
     public ResponseEntity<Consult> createConsult(@RequestBody Consult consultToCreate) {
 
         log.info("Creating Consult with data:"+consultToCreate);
