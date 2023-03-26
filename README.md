@@ -7,7 +7,7 @@ Http REST API that allows Consult management to a hospital.
 ### **API Documentation**
 #### **Offline**
    * go to https://editor.swagger.io/
-   * past the file content of apiDoc.ymn
+   * past the file content of apiDoc.yml
 #### **Online**
 Once the application starts go to
 http://localhost:8080/challenge/swagger-ui/index.html#/
