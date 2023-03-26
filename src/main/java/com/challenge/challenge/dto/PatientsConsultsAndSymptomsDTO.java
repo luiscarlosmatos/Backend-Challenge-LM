@@ -1,7 +1,5 @@
 package com.challenge.challenge.dto;
 
-import com.challenge.challenge.entity.Consult;
-import com.challenge.challenge.entity.Symptom;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

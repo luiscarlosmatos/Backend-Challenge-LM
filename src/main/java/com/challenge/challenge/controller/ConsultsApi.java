@@ -1,8 +1,7 @@
 package com.challenge.challenge.controller;
 
 
-import com.challenge.challenge.dto.ConsultCreationDTO;
-import com.challenge.challenge.entity.*;
+import com.challenge.challenge.entity.Consult;
 import com.challenge.challenge.service.ConsultsService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.management.BadAttributeValueExpException;
 import java.net.URI;
 import java.util.List;
 
@@ -28,11 +26,6 @@ public class ConsultsApi {
     @Autowired
     private ConsultsService consultsService;
 
-    @GetMapping
-    public ResponseEntity<List<Consult>> getConsults() {
-
-        return ResponseEntity.ok(consultsService.getConsults());
-    }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Consult> getConsultById(@PathVariable("id") Long id) {

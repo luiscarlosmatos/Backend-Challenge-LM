@@ -41,12 +41,6 @@ public class ConsultsService {
     private final PathologyRepository pathologyRepository;
 
 
-    public List<Consult> getConsults() {
-
-        return consultsRepository.findAll();
-    }
-
-
     public Consult getConsultById(Long id) {
 
         return consultsRepository.findById(id)
