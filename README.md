@@ -1,9 +1,18 @@
-# **Getting Started**
+# **Consults Management**
 
 ### **What this is**
 
-This is a simple template to facilitate the development startup of our Backend Challenge.
-Provided in this project is a stripped down Springboot application, with a Postgres database, orchestrated with Docker. 
+Http REST API that allows Consult management to a hospital.
+
+### **API Documentation**
+#### **Offline**
+   * go to https://editor.swagger.io/
+   * past the file content of apiDoc.ymn
+#### **Online**
+Once the application starts go to
+http://localhost:8080/challenge/swagger-ui/index.html#/
+
+
 
 ### **Requirements**
 
@@ -18,4 +27,8 @@ Run the following commands in the command line:
     - mvn clean install 
     - docker build -t challenge-1.0.0.jar .
     - docker-compose up
+
+or by single click on:
+* ###### run.bat (windows)
+* ###### run.sh (linux)
 
