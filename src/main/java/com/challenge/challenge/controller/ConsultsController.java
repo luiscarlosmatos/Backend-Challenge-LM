@@ -13,29 +13,42 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/consults")
 @AllArgsConstructor
 @NoArgsConstructor
-@CrossOrigin
 @Log
-public class ConsultsApi {
+public class ConsultsController {
 
     @Autowired
     private ConsultsService consultsService;
 
-
+    /**
+     * Gets a consult by id.
+     * @param id refers to the consultId
+     * @return ResponseEntity with http status OK if the consults exists or http NOT_FOUND when doesn´t exist
+     */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Consult> getConsultById(@PathVariable("id") Long id) {
+
+        log.info("Getting Consult with ID:"+id);
 
         return ResponseEntity.ok(consultsService.getConsultById(id));
 
     }
 
+    /**
+     * Creates a consult. It's assumed that the Doctor must be already created, otherwise will return a BAD_REQUEST.
+     * other data, patient, symptom and symptom description will be created as well is don't exist.
+     *
+     * @param consultToCreate contains the consult information to be persisted
+     * @return ResponseEntity with http status CREATED if the operation is successful
+     */
     @PostMapping
     public ResponseEntity<Consult> createConsult(@RequestBody Consult consultToCreate) {
+
+        log.info("Creating Consult with data:"+consultToCreate);
 
         Consult consult = consultsService.createConsult(consultToCreate);
 

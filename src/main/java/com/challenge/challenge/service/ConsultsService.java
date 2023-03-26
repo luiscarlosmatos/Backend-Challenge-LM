@@ -13,6 +13,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Builder
+@Log
 public class ConsultsService {
 
     @Autowired
@@ -44,31 +46,42 @@ public class ConsultsService {
     public Consult getConsultById(Long id) {
 
         return consultsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Consult with ID="+id+" not found"));
+                .orElseThrow(() -> {
+                    log.info("Consult with id:"+id+" does not exist!");
+                    return new EntityNotFoundException("Consult with ID=" + id + " not found");
+                });
 
     }
 
-    public Consult createConsult(Consult consult)  {
+    public Consult createConsult(Consult consult) {
+
+        log.info("Creating consult...");
 
         Consult consultToSave = new Consult();
-
+        log.info("Getting patient with name:"+consult.getPatient().getName());
 
         consultToSave.setPatient(
                 patientRepository.findByName(consult.getPatient().getName())
-                        .orElseGet(() -> new Patient(
+                        .orElseGet(() -> {
+                            log.info(" patient with name:"+consult.getPatient().getName()+" does not exists! creating one..");
+                            return new Patient(
                                 consult.getPatient().getName(),
-                                consult.getPatient().getAge()
-                        ))
+                                consult.getPatient().getAge());
+                        })
         );
 
         consultToSave.setDoctor(doctorRepository.findByName(consult.getDoctor().getName())
-                .orElseThrow(() -> new IllegalArgumentException("Doctor with name:"+consult.getDoctor().getName()+" does not exists!"))
+                .orElseThrow(() -> {
+                    log.info("Doctor with name:" + consult.getDoctor().getName() + " does not exists!");
+                    return new IllegalArgumentException("Doctor with name:" + consult.getDoctor().getName() + " does not exists!");
+                })
         );
         consultToSave.setSpeciality(consult.getSpeciality());
 
         consultToSave.setPathology(
                 pathologyRepository.findByPathologyName(consult.getPathology().getPathologyName())
                         .orElseGet(() -> {
+                            log.info("creating new Pathology...");
                             Pathology newPathology = new Pathology();
                             newPathology.setPathologyName(consult.getPathology().getPathologyName());
                             newPathology.setPathologySymptoms(consult.getPathology().getPathologySymptoms()

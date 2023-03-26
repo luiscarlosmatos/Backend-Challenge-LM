@@ -28,10 +28,13 @@ public class PatientsService {
 
     public PatientPageDTO getPatients(int pageNo, int pageSize, String sortBy, String sortDir) {
 
+        //build sort object based on received parameters
+
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
         // create Pageable instance
+        // decrementing the page number to have a more natural user feeling, starting in 1 instead of 0
         Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
 
         Page<Patient> patients = patientRepository.findAll(pageable);
@@ -60,16 +63,16 @@ public class PatientsService {
 
         PatientsConsultsAndSymptomsDTO patientsConsultsAndSymptomsDTO = new PatientsConsultsAndSymptomsDTO();
 
-
+        // get the patient
         consultsRepository.findByPatientId(patient.getId())
-                .forEach(consult -> {
+                .forEach(consult -> { //iterates over patient's consults and add it's information to DTO
                     patientsConsultsAndSymptomsDTO.getConsults()
                             .add(ConsultDTO.builder()
                                     .consultId(consult.getId())
                                     .doctor(consult.getDoctor().getName())
                                     .speciality(consult.getSpeciality().getValue())
                                     .build());
-
+                    //iterates over the consult's symptoms and add it's information to the DTO
                     consult.getPathology().getPathologySymptoms()
                             .forEach(symptom -> patientsConsultsAndSymptomsDTO.getSymptoms()
                                     .add(SymptomDTO.builder()
@@ -82,8 +85,8 @@ public class PatientsService {
         return patientsConsultsAndSymptomsDTO;
     }
 
-    public List<SpecialityWithMaxPatientsDTO> findSpecialityWithMaxPatients() {
-        return patientRepository.findSpecialityWithMaxPatients();
+    public List<SpecialityWithMaxPatientsDTO> findSpecialityWithMaxPatients(int minCount) {
+        return patientRepository.findSpecialityWithMaxPatients(minCount);
     }
 
 }

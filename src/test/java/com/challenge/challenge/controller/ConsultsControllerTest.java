@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 //@ImportAutoConfiguration
-public class ConsultsApiTest {
+public class ConsultsControllerTest {
 
 
     @Autowired
