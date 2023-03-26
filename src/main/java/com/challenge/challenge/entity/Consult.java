@@ -5,7 +5,6 @@ import com.challenge.challenge.enums.SpecialityEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -37,7 +36,6 @@ public class Consult {
     private Pathology pathology;
 
     // Getters and Setters
-
 
     public Long getId() {
         return id;

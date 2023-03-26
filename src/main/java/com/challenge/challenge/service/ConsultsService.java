@@ -3,33 +3,31 @@ package com.challenge.challenge.service;
 import com.challenge.challenge.dao.ConsultsRepository;
 import com.challenge.challenge.dao.DoctorRepository;
 import com.challenge.challenge.dao.PathologyRepository;
-import com.challenge.challenge.dao.PatientRepository;
-import com.challenge.challenge.dto.ConsultCreationDTO;
+import com.challenge.challenge.dao.PagingPatientRepository;
 import com.challenge.challenge.entity.Consult;
 import com.challenge.challenge.entity.Pathology;
 import com.challenge.challenge.entity.Patient;
 import com.challenge.challenge.entity.Symptom;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Builder
+@Log
 public class ConsultsService {
 
     @Autowired
     private final ConsultsRepository consultsRepository;
 
     @Autowired
-    private final PatientRepository patientRepository;
+    private final PagingPatientRepository pagingPatientRepository;
 
     @Autowired
     private final DoctorRepository doctorRepository;
@@ -38,44 +36,45 @@ public class ConsultsService {
     private final PathologyRepository pathologyRepository;
 
 
-    public List<Consult> getConsults() {
-
-        return consultsRepository.findAll();
-    }
-
-
     public Consult getConsultById(Long id) {
 
         return consultsRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Consult with ID="+id+" not found"));
+                .orElseThrow(() -> {
+                    log.info("Consult with id:"+id+" does not exist!");
+                    return new EntityNotFoundException("Consult with ID=" + id + " not found");
+                });
 
     }
 
     public Consult createConsult(Consult consult) {
 
-        Consult consultToSave = new Consult();
+        log.info("Creating consult...");
 
+        Consult consultToSave = new Consult();
+        log.info("Getting patient with name:"+consult.getPatient().getName());
 
         consultToSave.setPatient(
-                patientRepository.findByName(consult.getPatient().getName())
-                        .orElseGet(() -> new Patient(
+                pagingPatientRepository.findByName(consult.getPatient().getName())
+                        .orElseGet(() -> {
+                            log.info(" patient with name:"+consult.getPatient().getName()+" does not exists! creating one..");
+                            return new Patient(
                                 consult.getPatient().getName(),
-                                consult.getPatient().getAge()
-                        ))
+                                consult.getPatient().getAge());
+                        })
         );
 
-
-//        Doctor doctor = doctorRepository.findByName(consult.getDoctorName()).orElseThrow(() -> {
-//            //TODO ERROR;
-//            //return ResponseEntity.badRequest().body("Doctor with");
-//        });
-
-        consultToSave.setDoctor(doctorRepository.findByName(consult.getDoctor().getName()).get());
+        consultToSave.setDoctor(doctorRepository.findByName(consult.getDoctor().getName())
+                .orElseThrow(() -> {
+                    log.info("Doctor with name:" + consult.getDoctor().getName() + " does not exists!");
+                    return new IllegalArgumentException("Doctor with name:" + consult.getDoctor().getName() + " does not exists!");
+                })
+        );
         consultToSave.setSpeciality(consult.getSpeciality());
 
         consultToSave.setPathology(
                 pathologyRepository.findByPathologyName(consult.getPathology().getPathologyName())
                         .orElseGet(() -> {
+                            log.info("creating new Pathology...");
                             Pathology newPathology = new Pathology();
                             newPathology.setPathologyName(consult.getPathology().getPathologyName());
                             newPathology.setPathologySymptoms(consult.getPathology().getPathologySymptoms()
