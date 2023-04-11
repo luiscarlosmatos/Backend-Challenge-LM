@@ -9,6 +9,7 @@ import com.challenge.challenge.entity.Pathology;
 import com.challenge.challenge.entity.Patient;
 import com.challenge.challenge.entity.Symptom;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
